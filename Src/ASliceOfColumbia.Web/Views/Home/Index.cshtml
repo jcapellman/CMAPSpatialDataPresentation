@@ -1,0 +1,64 @@
+﻿@model ASliceOfColumbia.Web.Models.HomeModel
+
+@{
+    Layout = "../Shared/_Layout.cshtml";
+    ViewBag.Title = "Home";
+    Response.Headers["X-UA-Compatible"] = "IE=10";
+}
+
+<script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0"></script>
+<script type="text/javascript">
+    var map = null;
+    var locations = [];
+
+    function getMap() {
+        map = new Microsoft.Maps.Map(document.getElementById('myMap'), { credentials: 'PUT YOUR BING MAPS API KEY HERE',enableClickableLogo: false });
+    }
+
+    function addMarker(latitude, longitude, closestLocation) {
+        var infoboxOptions = {title:closestLocation + ' miles', width: 100, height: 50, showCloseButton: false};
+
+        var location = new Microsoft.Maps.Location(latitude, longitude);
+
+        locations.push(location);
+
+        var defaultInfobox = new Microsoft.Maps.Infobox(location, infoboxOptions );
+        map.entities.push(defaultInfobox);
+    }
+
+    function addStoreMarker(latitude, longitude, description) {
+        var infoboxOptions = {title:description, width: 100, height: 30, showCloseButton: false};
+
+        var location = new Microsoft.Maps.Location(latitude, longitude);
+
+        locations.push(location);
+
+        var defaultInfobox = new Microsoft.Maps.Infobox(location, infoboxOptions );
+        map.entities.push(defaultInfobox);
+    }
+
+    $(document).ready(function () {
+        getMap();
+
+        map.entities.clear();
+
+        @foreach (var item in Model.ReportItems) {
+            @:addMarker(@item.GeoCode.Latitude, @item.GeoCode.Longitude, '@item.ClosestLocation');
+        }
+
+         @foreach (var item in Model.StoreItems) {
+            @:addStoreMarker(@item.GeoCode.Latitude, @item.GeoCode.Longitude, '@item.Description');
+         }
+
+        if (locations.length == 1){
+            map.setView({center:locations[0],zoom:5});
+        } else {
+            var bestview = Microsoft.Maps.LocationRect.fromLocations(locations);
+            map.setView({bounds:bestview });
+        }
+    });
+</script>
+
+<div>
+    <div id='myMap' style="position:relative; width: 100%; height: 500px;"></div>
+</div>

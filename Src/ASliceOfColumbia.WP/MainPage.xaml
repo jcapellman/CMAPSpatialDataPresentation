@@ -1,0 +1,77 @@
+﻿<Page
+    x:Class="ASliceOfColumbia.WP.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:ASliceOfColumbia.WP"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="using:ASliceOfColumbia.WP.Viewmodels"
+    mc:Ignorable="d"
+    Foreground="#FFF"
+    >
+    <Page.DataContext>
+        <viewmodels:MainModel />
+    </Page.DataContext>
+
+   
+    
+    <Grid Background="#FFF">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            
+        </Grid.RowDefinitions>
+
+        <Image Source="/Assets/logo.jpg" Grid.Row="0" />
+        
+        <Grid Grid.Row="1">
+            <Grid.Background>
+                <ImageBrush ImageSource="/Assets/Background.jpg" />
+            </Grid.Background>
+            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" HorizontalAlignment="Center" Orientation="Vertical">
+                <Button BorderBrush="#000" Click="BtnGetNearbyLocations_OnClick" x:Name="btnGetNearbyLocations" Background="#FFF" Foreground="Red" Content="find me pizza" Width="200" HorizontalAlignment="Center" />
+
+                <ProgressBar IsIndeterminate="True" Visibility="{Binding Visibility_ProgressBar}" Foreground="White" Height="20" />
+            </StackPanel>
+
+            <ListBox SelectionMode="Single" ItemsSource="{Binding Locations}" Visibility="{Binding Visibility_ListBox}" Margin="10,0,10,10" Background="Transparent" Grid.Row="1">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel.Background>
+                                <SolidColorBrush Color="#FFF" Opacity="0.75" />
+                            </StackPanel.Background>
+
+                            <StackPanel Orientation="Vertical" Margin="5,5,5,5">
+                                <TextBlock Text="{Binding LocationName}" FontSize="30" Foreground="Red" />
+
+                                <TextBlock FontSize="20">phone number:</TextBlock>
+                                <TextBlock FontSize="25" FontWeight="Bold" Text="{Binding PhoneNumber}" />
+                                
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock FontWeight="Bold" Text="{Binding Distance}" FontSize="20" />
+                                    <TextBlock VerticalAlignment="Bottom"> miles from your location</TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+        
+        
+    </Grid>
+</Page>

@@ -1,0 +1,239 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ASliceOfColumbiaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="DeviceTypes">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Locations">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="IsOpen24Hours" Type="bit" Nullable="false" />
+          <Property Name="PhoneNumber" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="SpatialLocation" Type="geography" Nullable="false" />
+        </EntityType>
+        <EntityType Name="NearByRequests">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TimeOfRequest" Type="datetime" Nullable="false" />
+          <Property Name="DeviceTypeID" Type="int" Nullable="false" />
+          <Property Name="SpatialLocation" Type="geography" />
+        </EntityType>
+        <Association Name="FK_NearByRequests_0">
+          <End Role="DeviceTypes" Type="Self.DeviceTypes" Multiplicity="1" />
+          <End Role="NearByRequests" Type="Self.NearByRequests" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DeviceTypes">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="NearByRequests">
+              <PropertyRef Name="DeviceTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="REPORT_getRequestLocationsSP" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="StartDate" Type="datetime" Mode="In" />
+          <Parameter Name="EndDate" Type="datetime" Mode="In" />
+        </Function>
+        <Function Name="REPORT_getRequestLocationsToClosestLocationSP" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="StartDate" Type="datetime" Mode="In" />
+          <Parameter Name="EndDate" Type="datetime" Mode="In" />
+        </Function>
+        <Function Name="WEBAPI_getNearByLocationsSP" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="spatialLocation" Type="geography" Mode="In" />
+          <Parameter Name="DeviceTypeID" Type="int" Mode="In" />
+          <Parameter Name="SRID" Type="int" Mode="In" />
+        </Function>
+        <EntityContainer Name="ASliceOfColumbiaModelStoreContainer">
+          <EntitySet Name="DeviceTypes" EntityType="Self.DeviceTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Locations" EntityType="Self.Locations" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NearByRequests" EntityType="Self.NearByRequests" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_NearByRequests_0" Association="Self.FK_NearByRequests_0">
+            <End Role="DeviceTypes" EntitySet="DeviceTypes" />
+            <End Role="NearByRequests" EntitySet="NearByRequests" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ASliceOfColumbiaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="ASliceOfColumbiaEntities" annotation:LazyLoadingEnabled="true" >
+          <FunctionImport Name="REPORT_getRequestLocationsSP" ReturnType="Collection(ASliceOfColumbiaModel.REPORT_getRequestLocationsSP_Result)">
+            <Parameter Name="StartDate" Mode="In" Type="DateTime" />
+            <Parameter Name="EndDate" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="REPORT_getRequestLocationsToClosestLocationSP" ReturnType="Collection(ASliceOfColumbiaModel.REPORT_getRequestLocationsToClosestLocationSP_Result1)">
+            <Parameter Name="StartDate" Mode="In" Type="DateTime" />
+            <Parameter Name="EndDate" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <EntitySet Name="DeviceTypes" EntityType="ASliceOfColumbiaModel.DeviceType" />
+          <EntitySet Name="Locations" EntityType="ASliceOfColumbiaModel.Location" />
+          <FunctionImport Name="WEBAPI_getNearByLocationsSP" ReturnType="Collection(ASliceOfColumbiaModel.WEBAPI_getNearByLocationsSP_Result)">
+            <Parameter Name="spatialLocation" Mode="In" Type="Geography" />
+            <Parameter Name="DeviceTypeID" Mode="In" Type="Int32" />
+            <Parameter Name="SRID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="NearByRequest1" EntityType="ASliceOfColumbiaModel.NearByRequest1" />
+          <AssociationSet Name="FK_NearByRequests_0" Association="ASliceOfColumbiaModel.FK_NearByRequests_0">
+            <End Role="DeviceType" EntitySet="DeviceTypes" />
+            <End Role="NearByRequest1" EntitySet="NearByRequest1" />
+          </AssociationSet>
+        </EntityContainer>
+        <ComplexType Name="REPORT_getRequestLocationsSP_Result">
+          <Property Type="DateTime" Name="TimeOfRequest" Nullable="false" Precision="23" />
+          <Property Type="Binary" Name="SpatialData" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="REPORT_getRequestLocationsToClosestLocationSP_Result">
+          <Property Type="DateTime" Name="TimeOfRequest" Nullable="false" Precision="23" />
+          <Property Type="Double" Name="ClosestLocation" Nullable="true" />
+          <Property Type="Binary" Name="SpatialData" Nullable="true" />
+        </ComplexType>
+        <EntityType Name="DeviceType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="NearByRequests" Relationship="ASliceOfColumbiaModel.FK_NearByRequests_0" FromRole="DeviceType" ToRole="NearByRequest1" />
+        </EntityType>
+        <EntityType Name="Location">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsOpen24Hours" Type="Boolean" Nullable="false" />
+          <Property Name="PhoneNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SpatialLocation" Type="Geography" Nullable="false" />
+        </EntityType>
+        <ComplexType Name="WEBAPI_getNearByLocationsSP_Result">
+          <Property Type="String" Name="Description" Nullable="false" MaxLength="255" />
+          <Property Type="Boolean" Name="IsOpen24Hours" Nullable="false" />
+          <Property Type="String" Name="PhoneNumber" Nullable="false" MaxLength="15" />
+          <Property Type="Double" Name="Distance" Nullable="true" />
+        </ComplexType>
+        <EntityType Name="NearByRequest1">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TimeOfRequest" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DeviceTypeID" Type="Int32" Nullable="false" />
+          <Property Name="SpatialLocation" Type="Geography" />
+          <NavigationProperty Name="DeviceType" Relationship="ASliceOfColumbiaModel.FK_NearByRequests_0" FromRole="NearByRequest1" ToRole="DeviceType" />
+        </EntityType>
+        <Association Name="FK_NearByRequests_0">
+          <End Type="ASliceOfColumbiaModel.DeviceType" Role="DeviceType" Multiplicity="1" />
+          <End Type="ASliceOfColumbiaModel.NearByRequest1" Role="NearByRequest1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DeviceType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="NearByRequest1">
+              <PropertyRef Name="DeviceTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <ComplexType Name="REPORT_getRequestLocationsToClosestLocationSP_Result1">
+          <Property Type="DateTime" Name="TimeOfRequest" Nullable="false" Precision="23" />
+          <Property Type="Double" Name="ClosestLocation" Nullable="true" />
+          <Property Type="Binary" Name="SpatialData" Nullable="true" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ASliceOfColumbiaModelStoreContainer" CdmEntityContainer="ASliceOfColumbiaEntities" >
+          <FunctionImportMapping FunctionImportName="REPORT_getRequestLocationsSP" FunctionName="ASliceOfColumbiaModel.Store.REPORT_getRequestLocationsSP">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ASliceOfColumbiaModel.REPORT_getRequestLocationsSP_Result">
+                <ScalarProperty Name="TimeOfRequest" ColumnName="TimeOfRequest" />
+                <ScalarProperty Name="SpatialData" ColumnName="SpatialData" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="REPORT_getRequestLocationsToClosestLocationSP" FunctionName="ASliceOfColumbiaModel.Store.REPORT_getRequestLocationsToClosestLocationSP">
+          <ResultMapping>
+              <ComplexTypeMapping TypeName="ASliceOfColumbiaModel.REPORT_getRequestLocationsToClosestLocationSP_Result1">
+                <ScalarProperty Name="TimeOfRequest" ColumnName="TimeOfRequest" />
+                <ScalarProperty Name="ClosestLocation" ColumnName="ClosestLocation" />
+                <ScalarProperty Name="SpatialData" ColumnName="SpatialData" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="DeviceTypes">
+            <EntityTypeMapping TypeName="ASliceOfColumbiaModel.DeviceType">
+              <MappingFragment StoreEntitySet="DeviceTypes">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Locations">
+            <EntityTypeMapping TypeName="ASliceOfColumbiaModel.Location">
+              <MappingFragment StoreEntitySet="Locations">
+                <ScalarProperty Name="SpatialLocation" ColumnName="SpatialLocation" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="IsOpen24Hours" ColumnName="IsOpen24Hours" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="WEBAPI_getNearByLocationsSP" FunctionName="ASliceOfColumbiaModel.Store.WEBAPI_getNearByLocationsSP" >
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ASliceOfColumbiaModel.WEBAPI_getNearByLocationsSP_Result">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="IsOpen24Hours" ColumnName="IsOpen24Hours" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="Distance" ColumnName="Distance" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="NearByRequest1">
+            <EntityTypeMapping TypeName="ASliceOfColumbiaModel.NearByRequest1">
+              <MappingFragment StoreEntitySet="NearByRequests">
+                <ScalarProperty Name="SpatialLocation" ColumnName="SpatialLocation" />
+                <ScalarProperty Name="DeviceTypeID" ColumnName="DeviceTypeID" />
+                <ScalarProperty Name="TimeOfRequest" ColumnName="TimeOfRequest" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
